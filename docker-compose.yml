@@ -10,3 +10,4 @@ services:
     network_mode: host
     volumes:
       - /var/lib/postgresql/data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
