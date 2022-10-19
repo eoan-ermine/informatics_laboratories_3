@@ -37,4 +37,4 @@ def login():
 
 	if record:
 		return render_template('account.html', **record)
-	return render_template('login.html', error="User with given username does not exist")
+	return render_template('login.html', error="User with given username does not exist or password is incorrect")
