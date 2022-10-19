@@ -1,12 +1,18 @@
+from os import getenv
+
 import requests
 from flask import Flask, render_template, request
+from dotenv import load_dotenv
 import psycopg2
+
+
+load_dotenv()
 
 
 app = Flask(__name__)
 conn = psycopg2.connect(
-	database="service_db", user="postgres", password="password",
-	host="localhost", port="5432"
+	database=getenv("PG_DATABASE"), user=getenv("PG_USER"), password=getenv("PG_PASSWORD"),
+	host=getenv("PG_HOST"), port=getenv("PG_PORT")
 )
 cursor = conn.cursor()
 
@@ -25,4 +31,3 @@ def login():
 	records = list(cursor.fetchall())
 
 	return render_template('account.html', full_name=records[0][1])
-
