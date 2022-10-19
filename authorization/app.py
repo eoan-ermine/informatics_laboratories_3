@@ -27,7 +27,9 @@ def login():
 	username = request.form.get('username')
 	password = request.form.get('password')
 
-	cursor.execute('SELECT * FROM service.users WHERE password=%s', (str(username), str(password)))
+	cursor.execute('SELECT * FROM service.users WHERE login=%s AND password=%s', (str(username), str(password)))
 	records = list(cursor.fetchall())
 
-	return render_template('account.html', full_name=records[0][1])
+	if records:
+		return render_template('account.html', full_name=records[0][1])
+	return render_template('login.html')
