@@ -26,12 +26,15 @@ def index():
 
 @app.route('/login/', methods=['POST'])
 def login():
-	username = request.form.get('username')
-	password = request.form.get('password')
+	username = request.form.get('username', '')
+	password = request.form.get('password', '')
+
+	if not username or not password:
+		return render_template('login.html', error="Please, fill all the inputs")
 
 	cursor.execute('SELECT * FROM service.users WHERE login=%s AND password=%s', (str(username), str(password)))
 	record = cursor.fetchone()
 
 	if record:
 		return render_template('account.html', **record)
-	return render_template('login.html')
+	return render_template('login.html', error="User with given username does not exist")
