@@ -3,7 +3,9 @@ from os import getenv
 import requests
 from flask import Flask, render_template, request
 from dotenv import load_dotenv
+
 import psycopg2
+import psycopg2.extras
 
 
 load_dotenv()
@@ -14,7 +16,7 @@ conn = psycopg2.connect(
 	database=getenv("PG_DATABASE"), user=getenv("PG_USER"), password=getenv("PG_PASSWORD"),
 	host=getenv("PG_HOST"), port=getenv("PG_PORT")
 )
-cursor = conn.cursor()
+cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
 
 @app.route('/login/', methods=['GET'])
@@ -28,8 +30,8 @@ def login():
 	password = request.form.get('password')
 
 	cursor.execute('SELECT * FROM service.users WHERE login=%s AND password=%s', (str(username), str(password)))
-	records = list(cursor.fetchall())
+	record = cursor.fetchone()
 
-	if records:
-		return render_template('account.html', full_name=records[0][1])
+	if record:
+		return render_template('account.html', **record)
 	return render_template('login.html')
